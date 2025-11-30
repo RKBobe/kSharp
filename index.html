@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kOS Pro Offline Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- LEFT COLUMN: IDE & CONTROLS -->
+<div class="col left-col">
+    <div class="header">
+        <h2>kOS PRO IDE</h2>
+        <div class="btn-group">
+            <button class="primary" id="btn-run">COMPILE & RUN</button>
+            <button class="stop" id="btn-stop">ABORT</button>
+            <button id="btn-reset">RESET SIM</button>
+        </div>
+    </div>
+
+    <!-- Configuration Panel -->
+    <div class="config-panel">
+        <div class="input-group">
+            <label>Max Thrust (kN)</label>
+            <input type="number" id="cfg-thrust" value="500" min="1">
+        </div>
+        <div class="input-group">
+            <label>Wet Mass (tons)</label>
+            <input type="number" id="cfg-mass" value="25" min="1">
+        </div>
+        <div class="input-group">
+            <label>Fuel Units</label>
+            <input type="number" id="cfg-fuel" value="600" min="0">
+        </div>
+        <div class="input-group">
+            <label>Stages</label>
+            <input type="number" id="cfg-stages" value="2" min="0">
+        </div>
+    </div>
+
+    <!-- Code Editor -->
+    <div class="editor-container">
+        <textarea id="code" spellcheck="false" placeholder="// Enter KerboScript Code Here...">
+// --- AUTOMATED ORBITAL LAUNCH ---
+CLEARSCREEN.
+PRINT "Initializing Flight Computer...".
+WAIT 1.
+PRINT "Launch sequence start.".
+
+// SETUP
+LOCK THROTTLE TO 1.0.
+LOCK STEERING TO HEADING(90, 90). // Up
+STAGE.
+PRINT "LIFTOFF!".
+
+// LOOP UNTIL SPACE
+UNTIL APOAPSIS > 80000 {
+    
+    // GRAVITY TURN LOGIC
+    IF ALTITUDE < 2000 {
+        LOCK STEERING TO HEADING(90, 90).
+    } ELSE {
+        IF ALTITUDE < 10000 {
+            LOCK STEERING TO HEADING(90, 80).
+        } ELSE {
+            IF ALTITUDE < 30000 {
+                 LOCK STEERING TO HEADING(90, 60).
+            } ELSE {
+                 LOCK STEERING TO HEADING(90, 45).
+            }
+        }
+    }
+
+    // STAGING LOGIC
+    IF FUEL < 0.1 {
+        PRINT "Fuel Depleted. Staging.".
+        STAGE.
+        WAIT 0.5.
+    }
+
+    // TELEMETRY
+    PRINT "ALT: " + ROUND(ALTITUDE) + "m" AT (0,0).
+    PRINT "APO: " + ROUND(APOAPSIS) + "m" AT (0,1).
+    PRINT "THR: " + ROUND(THROTTLE*100) + "%" AT (0,2).
+}
+
+PRINT "Target Apoapsis Reached.".
+LOCK THROTTLE TO 0.
+LOCK STEERING TO HEADING(90, 0). // Point Horizon
+
+// COAST
+PRINT "Coasting to vacuum...".
+UNTIL ALTITUDE > 70000 {
+    WAIT 0.5.
+}
+
+PRINT "In Vacuum. Waiting for Circularization.".
+WAIT UNTIL ETA:APOAPSIS < 15.
+
+PRINT "Performing Circularization Burn...".
+LOCK THROTTLE TO 1.0.
+
+UNTIL PERIAPSIS > 75000 {
+    PRINT "PE: " + ROUND(PERIAPSIS) AT (0,4).
+    IF FUEL < 0.1 { STAGE. }
+}
+
+LOCK THROTTLE TO 0.
+PRINT "ORBIT ESTABLISHED.".
+PRINT "Final Ap: " + ROUND(APOAPSIS).
+PRINT "Final Pe: " + ROUND(PERIAPSIS).
+</textarea>
+    </div>
+
+    <!-- Output Terminal -->
+    <div class="terminal" id="terminal">
+        <div class="term-line log-sys">System Ready.</div>
+    </div>
+</div>
+
+<!-- RIGHT COLUMN: SIMULATION DISPLAY -->
+<div class="col right-col">
+    <canvas id="simCanvas"></canvas>
+    
+    <!-- Heads Up Display -->
+    <div id="hud">
+        ALT: 0 m<br>VEL: 0 m/s
+    </div>
+    
+    <div id="warnings">TERRAIN WARNING</div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="engine.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+:root {
+    --bg: #121212;
+    --panel: #1e1e1e;
+    --border: #333;
+    --text: #e0e0e0;
+    --accent: #2196F3;
+    --success: #4CAF50;
+    --error: #f44336;
+    --warning: #FFC107;
+}
+
+body { 
+    margin: 0; 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: 'Segoe UI', 'Roboto', sans-serif; 
+    height: 100vh; 
+    display: flex; 
+    overflow: hidden; 
+}
+
+/* LAYOUT COLUMNS */
+.col { display: flex; flex-direction: column; height: 100%; }
+.left-col { 
+    width: 450px; 
+    border-right: 1px solid var(--border); 
+    background: var(--panel); 
+    z-index: 10; 
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5); 
+}
+.right-col { 
+    flex: 1; 
+    position: relative; 
+    background: #000; 
+}
+
+/* HEADER & BUTTONS */
+.header { 
+    padding: 15px; 
+    background: #252526; 
+    border-bottom: 1px solid var(--border); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+h2 { margin: 0; font-size: 16px; color: var(--accent); letter-spacing: 1px; }
+
+.btn-group { display: flex; gap: 8px; }
+button { 
+    background: #333; 
+    border: 1px solid #555; 
+    color: white; 
+    padding: 8px 16px; 
+    cursor: pointer; 
+    font-size: 12px; 
+    border-radius: 4px; 
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+button:hover { background: #444; border-color: #777; }
+button:active { transform: translateY(1px); }
+button.primary { background: var(--accent); border-color: #1976D2; }
+button.primary:hover { background: #1976D2; }
+button.stop { background: var(--error); border-color: #D32F2F; }
+button.stop:hover { background: #D32F2F; }
+
+/* CONFIG PANEL */
+.config-panel { 
+    padding: 15px; 
+    border-bottom: 1px solid var(--border); 
+    background: #222; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+}
+.input-group { display: flex; flex-direction: column; }
+.input-group label { color: #888; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; }
+input[type="number"] { 
+    background: #111; 
+    border: 1px solid #444; 
+    color: #fff; 
+    padding: 6px; 
+    border-radius: 4px; 
+    font-family: monospace;
+}
+input[type="number"]:focus { border-color: var(--accent); outline: none; }
+
+/* EDITOR */
+.editor-container { flex: 1; position: relative; display: flex; flex-direction: column; }
+textarea { 
+    flex: 1; 
+    background: #1a1a1a; 
+    color: #dcdcdc; 
+    border: none; 
+    padding: 15px; 
+    font-family: 'Consolas', 'Monaco', monospace; 
+    font-size: 13px; 
+    line-height: 1.5; 
+    resize: none; 
+    outline: none; 
+    white-space: pre; 
+    overflow-x: auto; 
+}
+
+/* TERMINAL */
+.terminal { 
+    height: 200px; 
+    background: #000; 
+    border-top: 1px solid var(--border); 
+    padding: 10px; 
+    font-family: 'Consolas', monospace; 
+    font-size: 12px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+}
+.term-line { margin: 1px 0; padding-left: 10px; border-left: 2px solid transparent; }
+.log-info { color: #ccc; }
+.log-sys { color: var(--accent); border-left-color: var(--accent); }
+.log-err { color: var(--error); background: rgba(244, 67, 54, 0.1); border-left-color: var(--error); }
+.log-warn { color: var(--warning); border-left-color: var(--warning); }
+
+/* HUD & OVERLAYS */
+#hud { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    color: #0f0; 
+    font-family: 'Consolas', monospace; 
+    font-size: 14px; 
+    text-shadow: 1px 1px 2px #000; 
+    pointer-events: none; 
+    background: rgba(0,0,0,0.6); 
+    padding: 12px; 
+    border-radius: 4px; 
+    line-height: 1.6;
+    border: 1px solid rgba(0,255,0,0.2);
+}
+
+#warnings { 
+    position: absolute; 
+    bottom: 50px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    color: var(--error); 
+    font-weight: 900; 
+    font-family: sans-serif; 
+    text-shadow: 2px 2px 0 #000; 
+    font-size: 32px; 
+    display: none; 
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
